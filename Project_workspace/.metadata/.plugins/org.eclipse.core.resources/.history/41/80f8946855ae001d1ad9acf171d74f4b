@@ -1,0 +1,19 @@
+import com.student.dao.StudentDAO;
+
+public class test {
+
+	public static void main(String[] args) {
+		
+		StudentDAO dao = new StudentDAO();
+		
+		String a = dao.userCompare2("student");
+		String b = dao.userCompare("admin");
+		
+		
+		System.out.println(a);
+		System.out.println(b);
+		
+
+	}
+
+}

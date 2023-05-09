@@ -1,0 +1,62 @@
+create table student (    
+
+user_no number(38) primary key, -- 유저넘버 pk
+user_id varchar2(500) not null, -- id
+user_pwd varchar2(500) not null, -- password
+user_name varchar2(500) not null, --유저이름
+user_phone varchar2(500) not null, -- 010-1234-1234
+user_email varchar2(500) not null, -- abc@naver.com
+user_status varchar2(500) -- 수강신청승인 이용 
+
+);
+
+select * from student;
+select user_no, user_id, user_pwd, user_name, user_phone, user_email from STUDENT where user_name='aaa' and user_email='aaaa@naver.com';
+select user_no, user_id, user_pwd, user_name, user_phone, user_email from STUDENT where user_name='aaa';
+select user_id from STUDENT where user_name = 'aaa' or user_phone = '010-1111-1111';
+
+drop table student ;
+
+insert into student values(1,'id1','aa','aaa','010-1111-1111','aaaa@naver.com','ing');
+insert into student values(2,'id2','bb','bbb','bbbb@naver.com','010-2222-2222','ing');
+insert into student values(3,'id3','cc','ccc','cccc@naver.com','010-3333-3333','ing');
+
+commit;
+
+create table subject (  
+
+subject_no number(38) primary key, --과목넘버 pk 
+subject_name varchar2(500) not null, --과목이름
+subject_teacher varchar2(500) not null, -- 과목선생님
+subject_room varchar2(500) not null, -- 강의실호수
+subject_day varchar2(500) not null, --강의 요일
+subject_time varchar2(500) not null, --강의시간 
+subject_status varchar2(500) -- 회원탈퇴요청승인 이용
+
+);
+
+
+
+select * from subject;
+
+drop table subject;
+
+create table studentwait (    
+
+Wuser_no number(38) primary key, -- 유저넘버 pk
+Wuser_name varchar2(100) not null, --유저이름
+Wuser_id varchar2(100) not null, -- id
+wuser_pwd varchar2(100) not null, -- password
+wuser_email varchar2(100) not null, -- abc@naver.com
+wuser_phone varchar2(100) not null, -- 010-1234-1234
+wuser_status varchar2(100) -- 수강신청승인 이용 
+
+);
+
+insert into studentwait values(1,'idw','dd','ddd','dddd@naver.com','010-4444-4444','ing');
+
+
+select * from studentwait;
+
+commit;
+

@@ -1,0 +1,490 @@
+package com.student.controller.MyPage;
+
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.border.MatteBorder;
+
+import com.student.dao.MypageDAO;
+import com.student.vo.MemberVO;
+
+
+public class MyPageInfoUI{
+
+	MypageDAO dao = new MypageDAO();
+	MemberVO vo = new MemberVO();
+	
+	JFrame jf = new JFrame();
+	JPanel MainPanel = new JPanel();
+	JPanel MainInnerpanel = new JPanel();
+	private JButton EduInfoBtn = new JButton("학원소개");
+	private JButton TeachInfoBtn = new JButton("강사소개");
+	private JButton SugangBtn = new JButton("수강신청");
+	private JButton consultBtn = new JButton("상담신청");
+	private JButton MapBtn = new JButton("오시는길");
+	private JPanel MenuPanel = new JPanel();
+
+	private JButton MyPageBtn = new JButton("마이페이지");
+	private JButton LogOutBtn = new JButton("로그아웃");
+	private JPanel MainTopPanel = new JPanel();
+	private JPanel MapPanel = new JPanel();
+	public JTextField textField; //id
+	public JTextField textField_2; //이름
+	public JTextField textField_3; //이메일
+	public JTextField textField_5; //연락처
+	public JPasswordField passwordField; // 비밀번호
+	public JButton changeBtn;
+
+
+	//생성자
+	public MyPageInfoUI() {
+		
+		//프레임 설정
+		jf.getContentPane().setBackground(new Color(255, 255, 255));
+		jf.setBackground(new Color(255, 255, 255));
+		jf.setTitle("KGITbank 입니다.");
+		jf.getContentPane().setLayout(null);
+		
+
+		jf.setSize(1280,1024);
+		jf.setResizable(false);
+		jf.setLocationRelativeTo(null);
+		jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);	
+
+		//메인 탑 패널
+		MainTopPanel.setBounds(0, 0, 1274, 131);
+		MainTopPanel.setLayout(null);
+		
+		
+		//메인 탑 패널 로고 이미지
+		JButton HomeBtn = new JButton("");
+		HomeBtn.setBorder(null);
+		HomeBtn.setBackground(Color.WHITE);
+		HomeBtn.setBounds(485, 8, 328, 116);
+		HomeBtn.setFont(new Font("HY견고딕", Font.PLAIN, 24));
+		HomeBtn.setBorderPainted(false);
+		HomeBtn.setContentAreaFilled(false);
+		HomeBtn.setFocusPainted(false);
+		HomeBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				jf.dispose();
+				new MyPageInfoUI();
+			}
+		});
+		
+		
+		ImageIcon KGeduIcon = new ImageIcon("C:\\JAVA Graduation\\Project_workspace\\Student\\images\\KG_IT_HOME.png");
+		Image KGeduImg = KGeduIcon.getImage();
+		Image KGImgChange = KGeduImg.getScaledInstance(290, 100, Image.SCALE_SMOOTH);
+		ImageIcon KGIconChange = new ImageIcon(KGImgChange);
+		JLabel KGeduLabel = new JLabel(KGIconChange);
+		HomeBtn.add(KGeduLabel);
+		//KGeduLabel.setBounds(198, 43, 129, 29);
+		MainTopPanel.add(HomeBtn);
+		
+		//메인 탑 패널 로그인/회원가입 버튼
+		MyPageBtn.setBounds(883, 51, 174, 52);
+		MyPageBtn.setBorder(new MatteBorder(0, 0, 0, 1, (Color) new Color(0, 0, 0)));
+		MyPageBtn.setFont(new Font("HY견고딕", Font.PLAIN, 24));
+		MyPageBtn.setContentAreaFilled(false);
+		MyPageBtn.setFocusPainted(false);
+		
+		
+		LogOutBtn.setBounds(1073, 52, 161, 50);
+		LogOutBtn.setBorder(new MatteBorder(0, 0, 0, 0, (Color) new Color(0, 0, 0)));
+		LogOutBtn.setFont(new Font("HY견고딕", Font.PLAIN, 24));
+		LogOutBtn.setBorderPainted(false);
+		LogOutBtn.setContentAreaFilled(false);
+		LogOutBtn.setFocusPainted(false);
+		
+		MainTopPanel.add(MyPageBtn);
+		MainTopPanel.add(LogOutBtn);
+
+		
+
+		
+		//메뉴패널
+		MenuPanel.setBounds(50, 142, 1164, 53);
+		
+		MenuPanel.setBorder(new MatteBorder(0, 0, 6, 0, (Color) new Color(0, 0, 0)));
+		MenuPanel.setBackground(new Color(255, 255, 255));
+		MenuPanel.setLayout(null);
+
+		//메뉴 버튼
+		EduInfoBtn.setBorder(null);
+		EduInfoBtn.setBackground(Color.WHITE);
+		EduInfoBtn.setBounds(39, 11, 120, 30);
+		EduInfoBtn.setFont(new Font("HY견고딕", Font.PLAIN, 24));
+		EduInfoBtn.setBorderPainted(false);
+		EduInfoBtn.setContentAreaFilled(false);
+		EduInfoBtn.setFocusPainted(false);
+		MenuPanel.add(EduInfoBtn);
+
+		TeachInfoBtn.setBorder(null);
+		TeachInfoBtn.setBackground(Color.WHITE);
+		TeachInfoBtn.setBounds(277, 11, 120, 30);
+		TeachInfoBtn.setFont(new Font("HY견고딕", Font.PLAIN, 24));
+		TeachInfoBtn.setBorderPainted(false);
+		TeachInfoBtn.setContentAreaFilled(false);
+		TeachInfoBtn.setFocusPainted(false);
+		MenuPanel.add(TeachInfoBtn);
+
+		SugangBtn.setBorder(null);
+		SugangBtn.setBackground(Color.WHITE);
+		SugangBtn.setBounds(521, 11, 120, 30);
+		SugangBtn.setFont(new Font("HY견고딕", Font.PLAIN, 24));
+		SugangBtn.setBorderPainted(false);
+		SugangBtn.setContentAreaFilled(false);
+		SugangBtn.setFocusPainted(false);
+		MenuPanel.add(SugangBtn);
+
+		consultBtn.setBorder(null);
+		consultBtn.setBackground(Color.WHITE);
+		consultBtn.setBounds(774, 11, 120, 30);
+		consultBtn.setFont(new Font("HY견고딕", Font.PLAIN, 24));
+		consultBtn.setBorderPainted(false);
+		consultBtn.setContentAreaFilled(false);
+		consultBtn.setFocusPainted(false);
+		MenuPanel.add(consultBtn);
+		MapBtn.setBorder(null);
+		MapBtn.setBackground(Color.WHITE);
+		MapBtn.setBounds(1008, 11, 120, 30);
+		MapBtn.setFont(new Font("HY견고딕", Font.PLAIN, 24));
+		MapBtn.setBorderPainted(false);
+		MapBtn.setContentAreaFilled(false);
+		MapBtn.setFocusPainted(false);
+		MapBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				MainInnerpanel.setVisible(false);
+				MainPanel.setVisible(false);
+				MapPanel.setVisible(true);
+			}
+		});
+		
+		MenuPanel.add(MapBtn);
+
+		
+		//메인패널 설정
+		MainPanel = new JPanel();
+		MainPanel.setBackground(new Color(255, 255, 255));
+		MainPanel.setBounds(8, 193, 1248, 784);
+		MainPanel.setLayout(null);
+		MainPanel.setPreferredSize(new Dimension(1249,774));
+		MainInnerpanel.setBounds(7, 15, 1230, 763);
+		MainInnerpanel.setLayout(null);
+		//MainInnerpanel.setPreferredSize(new Dimension(300,300));
+		
+		
+		//메인 이미지
+		ImageIcon MainIcon_1 = new ImageIcon("C:\\JAVA Graduation\\Project_workspace\\Student\\images\\메인사진.png");
+		Image MainImg_1 = MainIcon_1.getImage();
+		Image MainImgChange_1 = MainImg_1.getScaledInstance(700, 700, Image.SCALE_SMOOTH);
+		ImageIcon MainIconChange_1 = new ImageIcon(MainImgChange_1);
+
+		JScrollPane js = new JScrollPane(MainInnerpanel,
+				JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+				JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		
+		JPanel MainInnerpanel_1 = new JPanel();
+		MainInnerpanel_1.setLayout(null);
+		MainInnerpanel_1.setBackground(Color.WHITE);
+		MainInnerpanel_1.setBounds(0, 0, 1230, 763);
+		MainInnerpanel.add(MainInnerpanel_1);
+		
+		JPanel basePanel = new JPanel();
+		basePanel.setBackground(Color.BLACK);
+		basePanel.setLayout(null);
+		basePanel.setBounds(50, 152, 236, 80);
+		MainInnerpanel_1.add(basePanel);
+		
+		//기본정보 버튼 생성
+		JButton btnNewButton = new JButton("기본정보");
+		btnNewButton.setBackground(Color.WHITE);
+		btnNewButton.setFont(new Font("HY견고딕", Font.PLAIN, 24));
+		btnNewButton.setBounds(0, 0, 236, 80);
+		btnNewButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		basePanel.add(btnNewButton);
+		
+		//기본 정보 버튼 이벤트 등록
+		btnNewButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				new MyPageInfoUI();
+				jf.dispose();
+			}
+		});
+		//시간표 버튼생성
+		JPanel tablePanel = new JPanel();
+		tablePanel.setBackground(Color.BLACK);
+		tablePanel.setLayout(null);
+		tablePanel.setBounds(50, 343, 236, 80);
+		MainInnerpanel_1.add(tablePanel);
+		
+		JButton tableBtn = new JButton("시간표");
+		tableBtn.setBackground(Color.WHITE);
+		tableBtn.setFont(new Font("HY견고딕", Font.PLAIN, 24));
+		tableBtn.setBounds(0, 0, 236, 80);
+		tableBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		tablePanel.add(tableBtn);
+		//시간표 버튼이벤트 등록
+		tableBtn.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new MyPageTimeTableUI();
+				jf.dispose();
+			}
+		});
+		
+		JPanel outPanel = new JPanel();
+		outPanel.setBackground(Color.BLACK);
+		outPanel.setLayout(null);
+		outPanel.setBounds(50, 533, 236, 80);
+		MainInnerpanel_1.add(outPanel);
+		
+		//탈퇴버튼생성
+		JButton logoutBtn = new JButton("회원탈퇴");
+		logoutBtn.setBackground(Color.WHITE);
+		logoutBtn.setFont(new Font("HY견고딕", Font.PLAIN, 24));
+		logoutBtn.setBounds(0, 0, 236, 80);
+		logoutBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		outPanel.add(logoutBtn);
+		
+		//회원탈퇴버튼 클릭시 이벤트처리
+		logoutBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new MyPageDelete();
+				
+			}
+		});
+
+		
+		
+		
+
+		JPanel changePanel = new JPanel();
+		changePanel.setLayout(null);
+		changePanel.setBackground(Color.BLACK);
+		changePanel.setBounds(563, 648, 200, 55);
+		MainInnerpanel_1.add(changePanel);
+		
+		//수정버튼
+		changeBtn = new JButton("수정");
+		changeBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String changeId = textField.getText().trim();
+				String changePwd = passwordField.getText().trim();
+				String changeName = textField_2.getText().trim();
+				String changeEmail = textField_3.getText().trim();
+				String changePhone = textField_5.getText().trim();
+				
+				if(dao.modifyUser(changeId, changePwd, changeName, changeEmail, changePhone)>0) {
+					dao.messageBox(jf, "수정되었습니다.");
+				}
+				
+			}
+		});
+		changeBtn.setBackground(Color.WHITE);
+		changeBtn.setFont(new Font("HY견고딕", Font.PLAIN, 24));
+		changeBtn.setBounds(0, 0, 200, 55);
+		changeBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+		changePanel.add(changeBtn);
+	
+
+		
+		JPanel panel = new JPanel();
+		panel.setBackground(Color.WHITE);
+		panel.setBounds(414, 222, 600, 330);
+		MainInnerpanel_1.add(panel);
+		panel.setLayout(null);
+		
+		JPanel panel_1 = new JPanel();
+		panel_1.setBackground(Color.WHITE);
+		panel_1.setBounds(0, 0, 600, 50);
+		panel.add(panel_1);
+		panel_1.setLayout(null);
+		
+		JLabel lblNewLabel = new JLabel("아이디 :");
+		lblNewLabel.setHorizontalAlignment(SwingConstants.LEFT);
+		lblNewLabel.setFont(new Font("HY견고딕", Font.PLAIN, 18));
+		lblNewLabel.setBounds(20, 0, 100, 50);
+		panel_1.add(lblNewLabel);
+		
+		textField = new JTextField();//id텍스트 필드
+		textField.setFont(new Font("HY견고딕", Font.PLAIN, 18));
+		textField.setBounds(150, 0, 450, 50);
+		panel_1.add(textField);
+		textField.setColumns(10);
+		
+		JPanel panel_1_1 = new JPanel();
+		panel_1_1.setBackground(Color.WHITE);
+		panel_1_1.setBounds(0, 70, 600, 50);
+		panel.add(panel_1_1);
+		panel_1_1.setLayout(null);
+		
+		JLabel lblNewLabel_1 = new JLabel("비밀번호 :");
+		lblNewLabel_1.setHorizontalAlignment(SwingConstants.LEFT);
+		lblNewLabel_1.setFont(new Font("HY견고딕", Font.PLAIN, 18));
+		lblNewLabel_1.setBounds(20, 0, 100, 50);
+		panel_1_1.add(lblNewLabel_1);
+		
+		passwordField = new JPasswordField();//비밀번호 텍스트필드
+		passwordField.setBounds(150, 1, 450, 50);
+		panel_1_1.add(passwordField);
+		
+		JPanel panel_1_2 = new JPanel();
+		panel_1_2.setBackground(Color.WHITE);
+		panel_1_2.setBounds(0, 140, 600, 50);
+		panel.add(panel_1_2);
+		panel_1_2.setLayout(null);
+		
+		JLabel lblNewLabel_2 = new JLabel("이름 :");
+		lblNewLabel_2.setHorizontalAlignment(SwingConstants.LEFT);
+		lblNewLabel_2.setFont(new Font("HY견고딕", Font.PLAIN, 18));
+		lblNewLabel_2.setBounds(20, 0, 100, 50);
+		panel_1_2.add(lblNewLabel_2);
+		
+		textField_2 = new JTextField();//이름 텍스트 필드
+		textField_2.setColumns(10);
+		textField_2.setBounds(150, 0, 450, 50);
+		panel_1_2.add(textField_2);
+		
+		JPanel panel_1_3 = new JPanel();
+		panel_1_3.setBackground(Color.WHITE);
+		panel_1_3.setBounds(0, 210, 600, 50);
+		panel.add(panel_1_3);
+		panel_1_3.setLayout(null);
+		
+		JLabel lblNewLabel_3 = new JLabel("연락처 :");
+		lblNewLabel_3.setHorizontalAlignment(SwingConstants.LEFT);
+		lblNewLabel_3.setFont(new Font("HY견고딕", Font.PLAIN, 18));
+		lblNewLabel_3.setBounds(20, 0, 100, 50);
+		panel_1_3.add(lblNewLabel_3);
+		
+		textField_5 = new JTextField();//연락처 텍스트 필드
+		textField_5.setBounds(150, 1, 450, 50);
+		panel_1_3.add(textField_5);
+		textField_5.setColumns(10);
+		
+		JPanel panel_1_4 = new JPanel();
+		panel_1_4.setBackground(Color.WHITE);
+		panel_1_4.setBounds(0, 280, 600, 50);
+		panel.add(panel_1_4);
+		panel_1_4.setLayout(null);
+		
+		JLabel lblNewLabel_4 = new JLabel("이메일 :");
+		lblNewLabel_4.setHorizontalAlignment(SwingConstants.LEFT);
+		lblNewLabel_4.setFont(new Font("HY견고딕", Font.PLAIN, 18));
+		lblNewLabel_4.setBounds(20, 0, 100, 50);
+		panel_1_4.add(lblNewLabel_4);
+		
+		textField_3 = new JTextField();//이메일 텍스트필드
+		textField_3.setColumns(10);
+		textField_3.setBounds(150, 0, 450, 50);
+		panel_1_4.add(textField_3);
+		
+		JPanel panel_2 = new JPanel();
+		panel_2.setBackground(Color.WHITE);
+		panel_2.setBounds(414, 76, 600, 100);
+		MainInnerpanel_1.add(panel_2);
+		panel_2.setLayout(null);
+		
+		JLabel lblNewLabel_5 = new JLabel("회원정보 수정");
+		lblNewLabel_5.setFont(new Font("HY견고딕", Font.PLAIN, 30));
+		lblNewLabel_5.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_5.setBounds(75, 10, 450, 80);
+		panel_2.add(lblNewLabel_5);
+		js.setPreferredSize(new Dimension(1200,700));
+		js.setBounds(7, 15, 1230, 763);
+		/*
+		//db 불러와서 텍스트 필드에 데이터 채우기
+		MypageDAO dao = new MypageDAO();
+		
+		textField.setText(me.jt.getValueAt(1, 0).toString());//아이디 입력박스에 첫번째 열 아이디값을 문자열로 표시
+		passwordField.setText(me.jt.getValueAt(1, 1).toString());//비밀번호 입력박스에 비밀번호를 문자열로 표시
+		textField_2.setText(me.jt.getValueAt(1, 2).toString());//이름 입력박스에 이름을 문자열로 표시 
+		textField_5.setText(me.jt.getValueAt(1, 3).toString());//연락처
+		textField_3.setText(me.jt.getValueAt(1, 3).toString());//이메일
+		
+		//아이디 입력박스 비활성화
+		textField.setEditable(false);
+		
+		*/
+		//=>물어보기 뭔가 이상...?이벤트처리로 하는게 아닌데 dao에 이벤트처리방법으로 되있음
+		
+		MypageDAO dao = new MypageDAO();
+//		MemberVO vo = new MemberVO();
+		
+		
+		if(dao.selectUserInfo()) {
+			textField.setText(dao.vo.getUser_id());//id
+			passwordField.setText(dao.vo.getUser_pwd());//비밀번호 입력박스에 비밀번호를 문자열로 표시
+			textField_2.setText(dao.vo.getUser_name());//이름 입력박스에 이름을 문자열로 표시 
+			textField_5.setText(dao.vo.getUser_phone());//연락처
+			textField_3.setText(dao.vo.getUser_email());//이메일
+			textField.setEditable(false);
+		}
+		
+		//오시는길
+		MapPanel.setBackground(new Color(255, 255, 255));
+		MapPanel.setBounds(17, 210, 1197, 731);
+		ImageIcon MapIcon = new ImageIcon("C:\\JAVA Graduation\\Project_workspace\\Student\\images\\KGMAP.png");
+		Image MapImg = MapIcon.getImage();
+		Image MapImgChange = MapImg.getScaledInstance(1000, 700, Image.SCALE_SMOOTH);
+		ImageIcon MapIconChange = new ImageIcon(MapImgChange);
+		JLabel MapIMG = new JLabel(MapIconChange);
+		MapIMG.setBounds(7, 15, 1230, 763);
+		MapPanel.add(MapIMG);
+		MapPanel.setVisible(false);
+		
+		jf.getContentPane().add(MainTopPanel);
+		MainPanel.add(js);
+		jf.getContentPane().add(MenuPanel);
+		jf.getContentPane().add(MainPanel);
+		jf.getContentPane().add(MapPanel);
+		jf.setVisible(true);
+		
+		
+	}//생성자
+
+
+//	@Override
+//	public void actionPerformed(ActionEvent e) {
+//		try {
+//		//String btn = e.getActionCommand();
+//		if(e.getSource() == changeBtn){
+//			if(dao.modifyUser(this) > 0) {
+//				//messageBox(this, "수정이 완료되었습니다");
+//				dao.userSelectAll();
+//				jf.dispose();
+//			}
+//		}
+//		} catch(Exception e6) {
+//			e6.printStackTrace();
+//			//System.out.println("오류");
+//		}
+//		
+//	}
+
+}

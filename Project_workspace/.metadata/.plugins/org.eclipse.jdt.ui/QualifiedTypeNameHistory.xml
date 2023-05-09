@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="com.student.controller.Login_SignUp.LoginUI"/>
+<fullyQualifiedTypeName name="com.student.controller.AdminPage.MainPageFrame_Admin"/>
+<fullyQualifiedTypeName name="com.student.controller.Login_SignUp.SignUpUI"/>
+<fullyQualifiedTypeName name="javax.swing.JFrame"/>
+<fullyQualifiedTypeName name="com.student.controller.MyPage.MyPageMainUI_Student"/>
+<fullyQualifiedTypeName name="com.student.controller.MainPage.MainPageUI"/>
+<fullyQualifiedTypeName name="com.student.controller.MainPage.MainPageFrame_Student"/>
+</qualifiedTypeNameHistroy>

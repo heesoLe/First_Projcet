@@ -1,0 +1,102 @@
+package com.student.controller;
+
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
+
+import com.student.controller.AdminPage.StudentManagePageGUI;
+import com.student.dao.StudentManagePageDAO;
+
+public class Student_AccessDelUI implements ActionListener{
+	
+	JFrame jf = new JFrame();
+	
+	String[] name = {"이름", "아이디", "비밀번호", "이메일", "연락처", "상태"};	
+	
+	DefaultTableModel dt1 = new DefaultTableModel(name, 0);
+	DefaultTableModel dt2 = new DefaultTableModel(name, 0);
+	/* name은 테이블의 열이름, 0은 테이블이 보관 유지하는 행 수
+	 */
+	
+	JTable jt1 = new JTable(dt1);
+	JTable jt2 = new JTable(dt2);
+	JScrollPane jsp1 = new JScrollPane(jt1);
+	JScrollPane jsp2 = new JScrollPane(jt2);
+	/* 남쪽에 검색기능 추가될 것
+	 */
+	JPanel p = new JPanel();
+	String [] comboName = {"이름", "아이디", "이메일" , "연락처", "상태"};
+	JComboBox combo = new JComboBox(comboName);
+	JTextField jtf = new JTextField(20);
+	JButton add = new JButton("추가");
+	
+	StudentManagePageDAO dao = new StudentManagePageDAO();
+	
+	public Student_AccessDelUI() {
+		
+		jf.setSize(800,1000);
+		jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		dao.userSelectAll1(dt2);
+		p.setBounds(0, 469, 778, 42);
+		p.setBackground(Color.LIGHT_GRAY); //패널 레이아웃 배경색을 노랑으로 설정
+		p.setLayout(null);
+		combo.setBounds(23, 9, 86, 27);
+		combo.setFont(new Font("HY견고딕", Font.PLAIN, 18));
+		p.add(combo); jtf.setBounds(114, 5, 475, 35);
+		jtf.setFont(new Font("바탕체", Font.BOLD, 24));
+		p.add(jtf); add.addActionListener(new ActionListener() {
+ 	public void actionPerformed(ActionEvent e) {
+		if(e.getSource() == add) {
+			int row = jt2.getSelectedRow(); //JTable에서 선택된 행번호
+			Object obj = jt2.getValueAt(row, 0); //선택된 행의 첫번째 열 값
+			
+			if(dao.userListInsert_1(obj.toString()) > 0) {
+				StudentManagePageGUI.messageBox(this, "회원가입이 승인되었습니다.");
+				
+				dao.userSelectAll(dt1);
+				jf.dispose(); //JDialog 창 닫기
+				}//inner if
+ 	}
+ 	}
+ });
+ add.setBounds(606, 8, 69, 29);
+		add.setFont(new Font("HY견고딕", Font.PLAIN, 14));
+		p.add(add);
+		jf.getContentPane().setLayout(null);
+		jsp1.setBounds(0, 0, 778, 468);
+		jf.getContentPane().add(jsp1);
+		jf.getContentPane().add(p);
+		
+		JButton del = new JButton("삭제");
+		del.setFont(new Font("HY견고딕", Font.PLAIN, 14));
+		del.setBounds(692, 8, 69, 29);
+		p.add(del);
+		
+
+		jsp2.setBounds(0, 511, 778, 433);
+		jf.getContentPane().add(jsp2);
+				
+		jf.setVisible(true);
+	}
+	
+			/* 메시지 박스를 띄워주는 메서드 작성 */
+			public static void messageBox1(Object obj, String message) {
+				JOptionPane.showMessageDialog((Component)obj, message);
+			}
+	public static void main(String[] args) {
+		 new Student_AccessDelUI();
+	}
+}

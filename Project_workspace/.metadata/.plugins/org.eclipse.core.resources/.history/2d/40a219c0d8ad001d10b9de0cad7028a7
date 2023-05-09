@@ -1,0 +1,263 @@
+package com.student.controller.Login_SignUp;
+
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.border.MatteBorder;
+
+import com.student.dao.StudentDAO;
+import com.student.vo.MemberVO;
+
+// 비밀번호 찾기 UI 
+
+public class FindPwdUI extends JDialog implements ActionListener {
+
+	JFrame jf = new JFrame();
+	private JLabel TitleIDLabel = new JLabel("비밀번호 찾기");
+	private JLabel NameLabel = new JLabel("이름 : ");
+	public final JTextField NametextField = new JTextField();
+	private final JLabel EmailLabel = new JLabel("이메일 : ");
+	private final JButton Findbtn = new JButton("찾기");
+	private final JButton Cancelbtn = new JButton("취소");
+	public final JTextField EmailtextField = new JTextField();
+	private final JPanel panel = new JPanel();
+	private final JLabel EmailnotieLabel = new JLabel(" ' ex) 가입시 등록한 이메일에 임시 비밀번호가 전송됩니다. '");
+	private final JLabel NamenotieLabel = new JLabel(" ' 한글 2~4자 이내로 입력해 주세요. '");
+
+	public StudentDAO dao = new StudentDAO();
+	public MemberVO vo = new MemberVO();
+
+	public FindPwdUI() {
+
+		//프레임 생성
+		setSize(new Dimension(470, 600));
+		getContentPane().setBackground(new Color(255, 255, 255));
+		getContentPane().setLayout(null);
+
+		setTitle("KGITbank 비밀번호 찾기");
+		setResizable(false);
+		setLocationRelativeTo(null);
+		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		setVisible(true);
+
+		//타이틀 위치 및 생성
+		TitleIDLabel.setBounds(14, 12, 436, 101);
+		TitleIDLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		TitleIDLabel.setFont(new Font("HY견고딕", Font.PLAIN, 30));
+		TitleIDLabel.setBackground(Color.WHITE);
+
+		//아이디 생성
+		getContentPane().add(TitleIDLabel);
+		NameLabel.setBounds(47, 163, 100, 30);
+		NameLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		NameLabel.setFont(new Font("HY견고딕", Font.PLAIN, 20));
+		NameLabel.setBackground(Color.WHITE);
+		getContentPane().add(NameLabel);
+		NametextField.setHorizontalAlignment(SwingConstants.LEFT);
+
+		//아이디 텍스트 생성
+		NametextField.setBounds(47, 220, 362, 40);
+		NametextField.setMargin(new Insets(0, 0, 0, 0));
+		NametextField.setBackground(Color.WHITE);
+		NametextField.setFont(new Font("HY견고딕", Font.PLAIN, 25));
+		getContentPane().add(NametextField);
+		NametextField.setColumns(10);
+
+		// 비밀번호 생성
+		EmailLabel.setBounds(47, 292, 116, 30);
+		EmailLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		EmailLabel.setFont(new Font("HY견고딕", Font.PLAIN, 20));
+		EmailLabel.setBackground(Color.WHITE);
+		getContentPane().add(EmailLabel);
+
+		// 찾기 버튼 생성
+		Findbtn.setFont(new Font("HY견고딕", Font.PLAIN, 18));
+		Findbtn.setBackground(Color.WHITE);
+		Findbtn.setBounds(74, 468, 135, 50);
+		Findbtn.setBorder(new MatteBorder(1,1,1,1, (Color) new Color(0, 0, 0)));
+		Findbtn.setBorderPainted(true);
+		Findbtn.setContentAreaFilled(true);
+		Findbtn.setFocusPainted(true);
+		getContentPane().add(Findbtn);
+
+		// 찾기 버튼 클릭시 이름과 연락처에 해당하는 본인 아이디와 초기화된 비밀번호 '0000' 으로 알림창 띄우기 
+		Findbtn.addActionListener(this);
+		//버튼에 마우스 올렸을때 손가락모양으로 변경
+		Findbtn.setCursor(new Cursor(Cursor.HAND_CURSOR)); 
+
+		// 취소 버튼 생성
+		Cancelbtn.setFont(new Font("HY견고딕", Font.PLAIN, 18));
+		Cancelbtn.setBorder(new MatteBorder(1,1,1,1, (Color) new Color(0, 0, 0)));
+		Cancelbtn.setBackground(Color.WHITE);
+		Cancelbtn.setBounds(250, 468, 135, 50);
+		Cancelbtn.setBorderPainted(true);
+		Cancelbtn.setContentAreaFilled(true);
+		Cancelbtn.setFocusPainted(true);
+		getContentPane().add(Cancelbtn);
+
+		// 취소 버튼 클릭 시 메인 화면 창으로 이동 및 로그인 창 닫기.
+		Cancelbtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				dispose();
+			}
+		});
+		//버튼에 마우스 올렸을때 손가락모양으로 변경
+		Cancelbtn.setCursor(new Cursor(Cursor.HAND_CURSOR)); 
+
+		EmailtextField.setHorizontalAlignment(SwingConstants.LEFT);
+		EmailtextField.setMargin(new Insets(0, 0, 0, 0));
+		EmailtextField.setFont(new Font("HY견고딕", Font.PLAIN, 25));
+		EmailtextField.setColumns(10);
+		EmailtextField.setBackground(Color.WHITE);
+		EmailtextField.setBounds(47, 350, 362, 40);		
+		getContentPane().add(EmailtextField);
+
+		EmailnotieLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		EmailnotieLabel.setForeground(new Color(0, 128, 128));
+		EmailnotieLabel.setFont(new Font("HY견고딕", Font.PLAIN, 14));
+		EmailnotieLabel.setBackground(Color.WHITE);
+		EmailnotieLabel.setBounds(75, 320, 203, 18);
+		getContentPane().add(EmailnotieLabel);
+
+		NamenotieLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		NamenotieLabel.setForeground(new Color(0, 128, 128));
+		NamenotieLabel.setFont(new Font("HY견고딕", Font.PLAIN, 13));
+		NamenotieLabel.setBackground(Color.WHITE);
+		NamenotieLabel.setBounds(87, 191, 237, 18);
+		getContentPane().add(NamenotieLabel);
+
+	}
+	public static void main(String[] args) {
+		new FindPwdUI();
+	}
+	//	@Override //메시지 창으로 띄우기
+	//	public void actionPerformed(ActionEvent e) {
+	//		String user_name = NametextField.getText();
+	//		String user_email = EmailtextField.getText();
+	//		
+	//		String pwd = dao.findPwd(user_name, user_email);
+	//		
+	//		try {
+	//			if(pwd != null) {
+	//				messageBox(null, user_name + " 님의 계정은 " + pwd + " 입니다.");
+	//				dispose();
+	//			}else {
+	//				messageBox(null, NametextField.getText()+"님의 계정이 확인 되지 않았습니다.");
+	//				NametextField.setText(""); NametextField.requestFocus(); // 필드박스 리셋 
+	//				EmailtextField.setText(""); 
+	//			}
+	//			
+	//		}catch(Exception ec) {
+	//			ec.printStackTrace();
+	//		}
+	//		
+	//		
+	//	} // end actionPerformed()
+
+	@Override // 메일 발송
+	public void actionPerformed(ActionEvent e) {
+		String user_name = NametextField.getText();
+		String user_email = EmailtextField.getText();
+		dao.userSelectAll(user_name, user_email);
+		//System.out.println(dao.vo.getUser_pwd()+dao.vo.getUser_name()+dao.vo.getUser_email());
+
+		try {
+
+			if(user_name.length()==0) {
+				JOptionPane.showMessageDialog(null, "이름을 입력하세요", "오류", JOptionPane.ERROR_MESSAGE);
+				NametextField.requestFocus();
+				return;
+			}else if(user_email.length() ==0) {
+				JOptionPane.showMessageDialog(null, "연락처를 입력하세요","오류",JOptionPane.ERROR_MESSAGE);
+				EmailtextField.requestFocus();
+				return;
+			} //end if else if
+
+		}catch(Exception ec){
+			ec.printStackTrace();
+		} // end try catch
+
+		//1. 이름과 이메일 값 기준으로 이메일이 존재하는지 조회
+		boolean result1;
+		result1 = dao.findEmail();
+		if(result1) { //true 라면			
+			//System.out.println("존재는 함(findEmail).");
+
+			//1-2. 일치하면 이메일을 출력
+			String email = dao.findEmail2();
+			if(email!=null) { //true 라면				
+				//System.out.println("존재는 함(findEmail2).");
+
+				// 2.이름과 이메일 값을 기준으로 비밀번호가 존재하는지
+				boolean result2;
+				result2 = dao.findPwd();
+				if(result2) { //true 라면
+					//System.out.println("비밀번호 존재함(findPwd).");
+					
+					// 2-1. 비밀번호 랜덤값으로 변환 
+					String randompwd = dao.getRandomPwd(10);
+					//System.out.println("랜덤 비빌번호 값(getRandomPwd) : "+randompwd);
+					//System.out.println(dao.vo.getUser_name());
+					
+					// → 2-2.변환값으로 변경 
+					dao.modifyPwd(); 
+					dao.vo.getUser_pwd(); dao.vo.getUser_name(); dao.vo.getUser_email();
+					
+							// 3. 해당 이메일에 변경된 비밀번호 값 전송
+							try {
+								boolean send = dao.SendEmail(user_email);
+								if(send == true) {
+									messageBox(null, user_name+"님의 이메일로 임시비밀번호를 발송해드렸습니다.");
+									dispose();
+								}else {
+									messageBox(null, user_name+"님의"+user_email+"로 발송이 되지 않았습니다. 관리자로 문의 부탁드립니다.");
+									NametextField.setText(""); NametextField.requestFocus(); // 필드박스 리셋
+									EmailtextField.setText("");
+								} //end if else(send)
+							} catch (Exception e1) {
+								e1.printStackTrace();
+							}// end try catch(send)
+											
+				}else {
+					//System.out.println("비밀번호 존재하지 않음.(findPwd)");
+					messageBox(null, user_name+"님의 계정으로부터 확인되는 비밀번호가 없습니다.");
+					NametextField.setText(""); NametextField.requestFocus(); // 필드박스 리셋
+					EmailtextField.setText("");
+				}//end if else : findPwd(3)
+
+			}else {
+				//System.out.println("이메일 출력 안됨.(findEmail2)");
+				messageBox(null, user_name+"님의 이메일 확인되지 않았습니다. ");
+				NametextField.setText(""); NametextField.requestFocus(); // 필드박스 리셋
+				EmailtextField.setText("");
+			}// end if else(2) : findEmail2
+		}else {
+			//System.out.println("존재하지 않음(findEmail).");
+			messageBox(null, "입력하신 내용으로는 확인되는 계정이 없습니다.");
+			NametextField.setText(""); NametextField.requestFocus(); // 필드박스 리셋
+			EmailtextField.setText("");
+		} //end if else(1) : findEmail
+
+	} // end actionPerformed()
+	//메시지 박스를 띄워주는 메서드 작성
+	public static void messageBox(Object obj, String message) {
+		JOptionPane.showMessageDialog((Component)obj, message);
+	}
+
+
+}

@@ -1,0 +1,26 @@
+package com.student.controller;
+
+import com.student.dao.StudentDAO;
+import com.student.vo.MemberVO;
+
+public class Teststst {
+	
+	   public static void main(String[] args) throws Exception {
+		      new Teststst();
+		      MemberVO vo = new MemberVO();
+		      StudentDAO dao = new StudentDAO();
+		     dao.userSelectAll("aaa", "aaaa@naver.com");
+		     // System.out.println(dao.vo.getUser_no() + dao.vo.getUser_id() + dao.vo.getUser_name() + dao.vo.getUser_pwd() + dao.vo.getUser_email() + dao.vo.getUser_phone());
+		      
+		     //System.out.println(dao.findEmail2());
+		     //System.out.println(dao.findPwd());
+		     //System.out.println(dao.modifyPwd());
+		    // System.out.println(dao.researchPwd());
+		     
+		     //dao.SendEmail();
+		     
+		      
+		      //System.out.println(dao.userSelectAll("aaa", "aaaa@naver.com"));
+		   }
+ 
+}

@@ -1,0 +1,255 @@
+package com.student.controller.Login_SignUp;
+
+
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.border.MatteBorder;
+
+import com.student.controller.MainPage.MainPageUI;
+import com.student.dao.StudentDAO;
+
+// 회원가입 UI
+
+public class SignUpUI extends JDialog implements ActionListener{
+
+	JFrame jf = new JFrame();
+	JPanel panel = new JPanel();
+
+	public JLabel user_name = new JLabel("이 름 : ");
+	public JLabel TitleLabel = new JLabel("KG ITBabnk 회원가입");
+	public JLabel user_id = new JLabel("아이디 : ");
+	public JLabel user_pwd = new JLabel("비밀번호 :");
+	public JLabel user_phone = new JLabel("연락처 : ");
+	public JLabel user_email = new JLabel("이메일 : ");
+
+	public JButton idCheckBtn = new JButton("idCheck");
+	public JButton SignUpBtn1 = new JButton("회원가입");
+	public JButton cancelBtn = new JButton("취소");
+
+	public JTextField idTextField;
+	public JPasswordField passwordField;
+	public JTextField nameTextField;
+	public JTextField phoneTextField;
+	public JTextField emailTextField;
+
+	StudentDAO dao = new StudentDAO();
+
+	//생성자
+	public SignUpUI() {
+		//프레임 설정
+
+		jf.getContentPane().setBackground(new Color(255, 255, 255));
+		jf.setBackground(new Color(255, 255, 255));
+		jf.setTitle("KGITbank 회원가입");
+		jf.setBounds(100, 100, 1233, 932);
+		jf.getContentPane().setLayout(null);
+		jf.setSize(660,900);
+		jf.setResizable(false);
+		jf.setLocationRelativeTo(null);
+		jf.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+
+		TitleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		TitleLabel.setFont(new Font("HY견고딕", Font.PLAIN, 25));
+		TitleLabel.setBounds(72, 105, 495, 58);
+		jf.getContentPane().add(TitleLabel);
+
+		JLabel idnoticeLabel = new JLabel(" ' 영문+숫자 10자 이내로 입력해 주세요. '");
+		idnoticeLabel.setForeground(new Color(0, 128, 128));
+		idnoticeLabel.setFont(new Font("HY견고딕", Font.PLAIN, 15));
+		idnoticeLabel.setBackground(Color.WHITE);
+		idnoticeLabel.setBounds(158, 261, 299, 28);
+		jf.getContentPane().add(idnoticeLabel);
+
+		JLabel pwdnoticeLabel = new JLabel("' 특수 문자 포함해서 6자 이상 입력해 주세요.  '");
+		pwdnoticeLabel.setForeground(new Color(0, 128, 128));
+		pwdnoticeLabel.setFont(new Font("HY견고딕", Font.PLAIN, 15));
+		pwdnoticeLabel.setBackground(Color.WHITE);
+		pwdnoticeLabel.setBounds(163, 372, 336, 23);
+		jf.getContentPane().add(pwdnoticeLabel);
+
+		JLabel namenoticeLabel = new JLabel(" ' 한글로 2~4자내로 입력해주세요. '");
+		namenoticeLabel.setBounds(158, 471, 252, 28);
+		jf.getContentPane().add(namenoticeLabel);
+		namenoticeLabel.setForeground(new Color(0, 128, 128));
+		namenoticeLabel.setFont(new Font("HY견고딕", Font.PLAIN, 15));
+		namenoticeLabel.setBackground(Color.WHITE);
+
+		JLabel phonenoticeLabel2 = new JLabel(" 예) 010-1234-5678 → 01012345678");
+		phonenoticeLabel2.setBounds(163, 585, 296, 28);
+		jf.getContentPane().add(phonenoticeLabel2);
+		phonenoticeLabel2.setForeground(new Color(0, 128, 128));
+		phonenoticeLabel2.setFont(new Font("HY견고딕", Font.PLAIN, 14));
+		phonenoticeLabel2.setBackground(Color.WHITE);
+
+		JLabel phonenoticeLabel1 = new JLabel("' 숫자로만 입력해주세요. '");
+		phonenoticeLabel1.setBounds(163, 565, 170, 30);
+		jf.getContentPane().add(phonenoticeLabel1);
+		phonenoticeLabel1.setForeground(new Color(0, 128, 128));
+		phonenoticeLabel1.setFont(new Font("HY견고딕", Font.PLAIN, 14));
+		phonenoticeLabel1.setBackground(Color.WHITE);
+
+		user_id.setHorizontalAlignment(SwingConstants.LEFT);
+		user_id.setFont(new Font("HY견고딕", Font.PLAIN, 17));
+		user_id.setBackground(Color.WHITE);
+		user_id.setBounds(72, 216, 77, 40);
+		jf.getContentPane().add(user_id);
+
+		idTextField = new JTextField();
+		idTextField.setBounds(163, 221, 294, 33);
+		jf.getContentPane().add(idTextField);
+		idTextField.setColumns(10);
+
+		user_pwd.setHorizontalAlignment(SwingConstants.LEFT);
+		user_pwd.setFont(new Font("HY견고딕", Font.PLAIN, 17));
+		user_pwd.setBackground(Color.WHITE);
+		user_pwd.setBounds(72, 320, 94, 40);
+		jf.getContentPane().add(user_pwd);
+
+		passwordField = new JPasswordField();
+		passwordField.setBounds(163, 325, 294, 33);
+		jf.getContentPane().add(passwordField);
+
+		user_name.setHorizontalAlignment(SwingConstants.LEFT);
+		user_name.setFont(new Font("HY견고딕", Font.PLAIN, 17));
+		user_name.setBackground(Color.WHITE);
+		user_name.setBounds(72, 418, 77, 40);
+		jf.getContentPane().add(user_name);      
+
+		nameTextField = new JTextField();
+		nameTextField.setColumns(10);
+		nameTextField.setBounds(163, 423, 294, 33);
+		jf.getContentPane().add(nameTextField);         
+
+		user_phone.setBounds(72, 527, 77, 40);
+		jf.getContentPane().add(user_phone);
+		user_phone.setHorizontalAlignment(SwingConstants.LEFT);
+		user_phone.setFont(new Font("HY견고딕", Font.PLAIN, 17));
+		user_phone.setBackground(Color.WHITE);
+
+		phoneTextField = new JTextField();
+		phoneTextField.setColumns(10);
+		phoneTextField.setBounds(163, 532, 294, 33);
+		jf.getContentPane().add(phoneTextField);
+
+		user_email.setBounds(72, 646, 82, 40);
+		jf.getContentPane().add(user_email);
+		user_email.setHorizontalAlignment(SwingConstants.LEFT);
+		user_email.setFont(new Font("HY견고딕", Font.PLAIN, 17));
+		user_email.setBackground(Color.WHITE);
+
+		emailTextField = new JTextField();
+		emailTextField.setColumns(10);
+		emailTextField.setBounds(163, 651, 294, 33);
+		jf.getContentPane().add(emailTextField);
+
+		idCheckBtn.setBounds(475, 217, 103, 40);
+		jf.getContentPane().add(idCheckBtn);
+		idCheckBtn.setFont(new Font("HY견고딕", Font.PLAIN, 15));
+		idCheckBtn.setBackground(new Color(255, 255, 255));
+		idCheckBtn.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
+		idCheckBtn.setBorderPainted(true);
+		idCheckBtn.setCursor(new Cursor(Cursor.HAND_CURSOR)); 
+		idCheckBtn.setContentAreaFilled(true);
+		//아이디 중복체크 버튼
+		idCheckBtn.addActionListener(this);
+
+		SignUpBtn1.setFont(new Font("HY견고딕", Font.PLAIN, 20));
+		SignUpBtn1.setContentAreaFilled(true);
+		SignUpBtn1.setBorderPainted(true);
+		SignUpBtn1.setBackground(Color.WHITE);
+		SignUpBtn1.setBounds(105, 735, 201, 58);
+		SignUpBtn1.setCursor(new Cursor(Cursor.HAND_CURSOR)); 
+		jf.getContentPane().add(SignUpBtn1);
+		// 회원 가입 버튼 
+		SignUpBtn1.addActionListener(this);
+
+		//취소 버튼
+		cancelBtn.setBounds(352, 735, 201, 58);
+		jf.getContentPane().add(cancelBtn);
+		cancelBtn.setFont(new Font("HY견고딕", Font.PLAIN, 20));
+		cancelBtn.setBackground(new Color(255, 255, 255));
+		cancelBtn.setBorderPainted(true);
+		cancelBtn.setCursor(new Cursor(Cursor.HAND_CURSOR)); 
+		cancelBtn.setContentAreaFilled(true);
+		//취소버튼 클릭 시 메인 페이지로 이동.
+		cancelBtn.addActionListener(new ActionListener() {		
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				jf.dispose();
+				new MainPageUI();				
+			}
+		});      
+
+		jf.setVisible(true);
+	}//생성자
+
+	public static void main(String[] args) {
+		new SignUpUI();
+	}
+	@Override
+	public void actionPerformed(ActionEvent e) {
+
+		String button = e.getActionCommand();
+
+		if(button.equals("회원가입")) {
+
+			if(dao.signUp(this) > 0) {
+				messageBox(this, nameTextField.getText()+" 회원님! 가입을 축하합니다!");
+				jf.dispose();              
+			}else {
+				messageBox(this, "회원가입에 실패하였습니다.");
+			} // end if else
+
+		} // end if(회원가입)
+		//아이디 중복 체크 버튼 실행
+		else if(button.equals("idCheck")) {
+			//아이디 필드 박스
+			if(idTextField.getText().trim().equals("")){
+				messageBox(this, "ID를 입력해주세요");
+				idTextField.requestFocus(); 
+			}else{
+				//아이디 필드 박스 값 = 아이디 중복 값 비교
+				if(dao.idCheck(idTextField.getText().trim())) {
+					messageBox(this, idTextField.getText()+"는 사용가능한 아이디 입니다.");
+					nameTextField.requestFocus();
+				}else {
+					messageBox(this, idTextField.getText()+"는 중복된 아이디 입니다.");
+					idTextField.setText("");
+					idTextField.requestFocus();
+				} //end if else
+
+			} // end if else
+		} //end else if(아이디 중복 체크)
+
+		String user_id = idTextField.getText();
+		String user_pwd = passwordField.getText();		
+		String user_name = nameTextField.getText();
+		String user_phone = phoneTextField.getText();
+		String user_email = emailTextField.getText();
+		
+		if(user_id.length()==0) {
+			JOptionPane.showMessageDialog(null, "아이디를 입력해 주세요", "오류", JOptionPane.ERROR_MESSAGE);
+			idTextField.requestFocus();
+			return;
+		
+		}//이벤트
+
+	//메시지 박스를 띄워주는 메서드 작성
+	public static void messageBox(Object obj, String message) {
+		JOptionPane.showMessageDialog((Component)obj, message);
+	} 
+} //end SignUpUI()

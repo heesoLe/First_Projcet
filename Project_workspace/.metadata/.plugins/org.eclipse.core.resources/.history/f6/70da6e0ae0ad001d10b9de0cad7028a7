@@ -1,0 +1,73 @@
+package com.student.vo;
+
+public class SubjectVO {
+
+	private int subject_no;//과목넘버 pk 
+	private String subject_name;//과목이름
+	private String subject_teacher;// 과목선생님
+	private int subject_room; // 강의실호수
+	private String subject_time;//강의시간 
+	private int subjcet_time_no;//강의시간 번호(시간표 이용)
+	private String subject_date; //강의 요일
+	private int subjcet_date_no;//강의 요일 번호(시간표 이용)
+	private String subject_status;// 회원탈퇴요청승인 이용
+	
+	
+	public int getSubject_no() {
+		return subject_no;
+	}
+	public void setSubject_no(int subject_no) {
+		this.subject_no = subject_no;
+	}
+	public String getSubject_name() {
+		return subject_name;
+	}
+	public void setSubject_name(String subject_name) {
+		this.subject_name = subject_name;
+	}
+	public String getSubject_teacher() {
+		return subject_teacher;
+	}
+	public void setSubject_teacher(String subject_teacher) {
+		this.subject_teacher = subject_teacher;
+	}
+	public int getSubject_room() {
+		return subject_room;
+	}
+	public void setSubject_room(int subject_room) {
+		this.subject_room = subject_room;
+	}
+	public String getSubject_time() {
+		return subject_time;
+	}
+	public void setSubject_time(String subject_time) {
+		this.subject_time = subject_time;
+	}
+	public int getSubjcet_time_no() {
+		return subjcet_time_no;
+	}
+	public void setSubjcet_time_no(int subjcet_time_no) {
+		this.subjcet_time_no = subjcet_time_no;
+	}
+	public String getSubject_date() {
+		return subject_date;
+	}
+	public void setSubject_date(String subject_date) {
+		this.subject_date = subject_date;
+	}
+	public int getSubjcet_date_no() {
+		return subjcet_date_no;
+	}
+	public void setSubjcet_date_no(int subjcet_date_no) {
+		this.subjcet_date_no = subjcet_date_no;
+	}
+	public String getSubject_status() {
+		return subject_status;
+	}
+	public void setSubject_status(String subject_status) {
+		this.subject_status = subject_status;
+	}
+	
+	
+
+}

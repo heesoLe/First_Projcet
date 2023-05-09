@@ -1,0 +1,13 @@
+import com.student.dao.StudentDAO;
+
+public class test {
+
+	public static void main(String[] args) {
+		
+		StudentDAO dao = new StudentDAO();
+		
+		dao.userCompare(user_id)
+
+	}
+
+}

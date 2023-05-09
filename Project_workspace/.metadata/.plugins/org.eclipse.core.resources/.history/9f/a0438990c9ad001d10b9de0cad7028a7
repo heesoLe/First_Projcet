@@ -1,0 +1,164 @@
+
+
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
+
+import com.student.controller.AdminPage.StudentManagePageGUI;
+import com.student.dao.StudentManagePageDAO;
+
+public class StudentManagePage extends JFrame implements ActionListener {
+
+	JMenuBar mb = new JMenuBar(); //메뉴바 객체 생성
+	JMenu m = new JMenu("회원관리"); //메뉴 객체 생성
+	JMenuItem check = new JMenuItem("조회"); //메뉴 아이템 객체 생성
+	JMenuItem update = new JMenuItem("수정");
+	JMenuItem delete = new JMenuItem("삭제");
+	JMenuItem quit = new JMenuItem("종료");
+	
+	String[] name = {"이름", "아이디", "비밀번호", "이메일", "연락처"};	
+	
+	DefaultTableModel dt = new DefaultTableModel(name, 0);
+	/* name은 테이블의 열이름, 0은 테이블이 보관 유지하는 행 수
+	 */
+	
+	JTable jt = new JTable(dt);
+	JScrollPane jsp = new JScrollPane(jt);
+	/* 남쪽에 검색기능 추가될 것
+	 */
+	JPanel p = new JPanel();
+	String [] comboName = {"이름", "아이디", "이메일" , "연락처"};
+	JComboBox combo = new JComboBox(comboName);
+	JTextField jtf = new JTextField(20);
+	JButton search = new JButton("검색");
+	
+	StudentManagePageDAO dao = new StudentManagePageDAO();
+	
+	/* 생성자에 화면 UI구성 및 이벤트 등록 */
+	public StudentManagePage() {
+		super("KG아이티뱅크 회원관리 프로그램"); //스윙 프레임 윈도우 제목 설정
+		setJMenuBar(mb); //스윙 프레임 윈도우에 메뉴바를 붙임
+		
+		//메뉴 아이템을 메뉴에 추가
+		m.add(check); 
+		m.add(update); m.add(delete); m.add(quit);
+		
+		//메뉴를 메뉴바에 추가
+		mb.add(m);
+		
+		p.setBackground(Color.yellow); //패널 레이아웃 배경색을 노랑으로 설정
+		p.add(combo); p.add(jtf); p.add(search);
+		
+		add(jsp, "Center");
+		add(p, "South");
+		
+		setSize(800, 500);
+		setVisible(true);
+		setLocationRelativeTo(null);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		//이벤트 등록
+		check.addActionListener(this);
+		update.addActionListener(this);
+		delete.addActionListener(this);
+		quit.addActionListener(this);
+		search.addActionListener(this);
+		
+		dao.userSelectAll(dt); //모든 레코드를 검색해서 DefaultTableModel에 올리기
+		
+		if(dt.getRowCount() > 0) {//레코드 값이 있는 경우
+			jt.setRowSelectionInterval(0, 0); //첫번째 행 선택
+			
+		}
+	}//생성자
+	
+	public static void main(String[] args) {
+		new StudentManagePage();
+
+	}//main()
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if(e.getSource() == check) {
+			dao.userSelectAll(dt);
+//			if(dao.get(this) > 0) {//가입 성공시 실행
+//
+//				dao.userSelectAll(me.dt); //모든 레코드를 다시 가져와서 디폴트 테이블 모델에 올리기
+//
+				if(dt.getRowCount() > 0) { //디폴트 테이블 모델에 레코드행이 있다면 
+					jt.setRowSelectionInterval(0, 0); //첫 번째 행 선택
+				}
+		}
+//		if(e.getSource() == insert) {//getSource() 메서드는 이벤트 발생 소스 객체를 반환
+			//가입버튼을 클릭하면 실행
+//			new UserManagePageGUI(this, "가입");} 
+		if(e.getSource() == update) {
+			new StudentManagePageGUI(this,"수정");
+		}else if(e.getSource() == delete) {
+			int row = jt.getSelectedRow(); //JTable에서 선택된 행번호
+			Object obj = jt.getValueAt(row, 0); //선택된 행의 첫번째 열 값
+			
+			if(dao.userDel(obj.toString()) > 0) {
+				StudentManagePageGUI.messageBox(this, "회원 삭제되었습니다!");
+				
+				dao.userSelectAll(dt);
+				if(dt.getRowCount() > 0) {
+					jt.setRowSelectionInterval(0, 0);
+				}
+			} else {
+				StudentManagePageGUI.messageBox(this, "회원이 삭제되지 않았습니다.");
+			}//delete if else
+		} else if(e.getSource() == quit) {//종료 메뉴 아이템일때 실행
+			System.exit(0); //전체 프로그램 종료
+		} else if(e.getSource() == search) {//검색버튼 클릭시 실행
+			
+			String fieldName = combo.getSelectedItem().toString().trim();
+			List<String> sqlName = new ArrayList<>(Arrays.asList("user_name", "user_id", "user_email", "user_phone"));
+			
+			if(fieldName.equals("이름")) {
+				dao.getUserSearch(dt, sqlName.get(1), jtf.getText().trim());
+				if(dt.getRowCount() > 0) {
+					jt.setRowSelectionInterval(0, 0);}//if
+			} else if(fieldName.equals("아이디")) {
+				dao.getUserSearch(dt, sqlName.get(2), jtf.getText().trim());
+				if(dt.getRowCount() > 0) {
+					jt.setRowSelectionInterval(0, 0);}
+			} else if(fieldName.equals("이메일")) {
+				dao.getUserSearch(dt, sqlName.get(3), jtf.getText().trim());
+				if(dt.getRowCount() > 0) {
+					jt.setRowSelectionInterval(0, 0);}
+			} else if(fieldName.equals("연락처")) {
+				dao.getUserSearch(dt, sqlName.get(4), jtf.getText().trim());
+				if(dt.getRowCount() > 0) {
+					jt.setRowSelectionInterval(0, 0);}
+			} else {
+				if(jtf.getText().trim().equals("")) {
+					StudentManagePageGUI.messageBox(this, "검색어를 입력하세요");
+					jtf.requestFocus();
+				} 
+				//else {
+					//dao.getUserSearch(dt, sqlName, jtf.getText().trim());
+					
+					//if(dt.getRowCount() > 0) jt.setRowSelectionInterval(0, 0);
+					
+		//		}
+			}
+		}
+	}//이벤트 발생시 호출
+}
+	

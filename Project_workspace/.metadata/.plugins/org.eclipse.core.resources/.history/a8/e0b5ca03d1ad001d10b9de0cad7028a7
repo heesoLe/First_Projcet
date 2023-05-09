@@ -1,0 +1,441 @@
+package com.student.dao;
+
+import java.security.SecureRandom;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Date;
+import java.util.Properties;
+
+import javax.mail.Message;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+
+import com.student.controller.Login_SignUp.SignUpUI;
+import com.student.vo.MemberVO;
+
+
+// 로그인, 회원가입, 아이디+비밀번호 찾기
+
+public class StudentDAO {
+	public MemberVO vo = new MemberVO();
+	// 모든 DAO 공통 설정 사항
+	// DB관련 필수 멤버변수 선언
+	Connection con; // DB연결 con
+	Statement st; // 쿼리문 수행 st
+	PreparedStatement pt; // 쿼리문 수행 pt
+	ResultSet rs; // 검색 결과 레코드를 저장할 rs
+
+
+	public StudentDAO() {
+		try {
+			Class.forName("oracle.jdbc.OracleDriver");
+			con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "STUDENT", "1234");
+		} catch(ClassNotFoundException e) {
+			System.out.println(e + "=> 로드 fail");
+		} catch(SQLException e) {
+			System.out.println(e + "=> 연결 fail");
+		} // end try catch
+	} // end StudentDAO()
+
+	// DB 닫기 기능 메서드 
+	public void dbClose() {
+		try {
+			if(rs != null) rs.close();
+			if(st != null) st.close();
+			if(pt != null) pt.close();
+		}catch(Exception e) {
+			System.out.println(e+"=> dbClose Failed");
+		}
+
+	} //end dbClose()
+
+	// SignUp 회원가입 -> 회원 저장
+	public int signUp(SignUpUI user) {	
+		int re = -1;
+		String SQL = "insert into STUDENT (user_id, user_pwd, user_name, user_phone, user_email) values (?, ?, ?, ?, ?)";
+
+		try {
+			pt = con.prepareStatement(SQL);
+
+			pt.setString(1, user.idTextField.getText()); // user_id 컬럼 레코드를 문자열로 가져와서 저장
+			pt.setString(2, user.passwordField.getText()); // user_pwd 컬럼 레코드를 문자열로 가져와서 저장
+			pt.setString(3, user.nameTextField.getText()); // user_name 컬럼 레코드를 문자열로 가져와서 저장
+			pt.setString(4, user.phoneTextField.getText()); // user_phone 컬럼 레코드를 문자열로 가져와서 저장
+			pt.setString(5, user.emailTextField.getText()); // user_email 컬럼 레코드를 문자열로 가져와서 저장
+
+			re=pt.executeUpdate();
+
+		}catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			dbClose();
+		}
+		return re;
+	} 
+
+	// 아이디 중복 체크
+	public boolean idCheck(String user_id) {
+		boolean result = true;
+
+		try {
+			pt = con.prepareStatement("select * from STUDENT where user_id=?");
+			pt.setString(1, user_id);
+			rs = pt.executeQuery(); // select문은 executeQuery()메서드로 실행
+			if(rs.next()) {
+				result = false;
+			} // end if
+		} catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			dbClose();
+		} // end try catch finally
+
+		return result;
+	} // end idCheck()
+
+	// Login 기능 : 회원(수강생) 정보 일치 여부
+	public boolean Login(String user_id, String user_pwd) {
+		boolean b = false;
+		String SQL = "select * from STUDENT where user_id=? and user_pwd=?";
+
+		try {
+			pt = con.prepareStatement(SQL);
+
+			pt.setString(1, user_id);
+			pt.setString(2, user_pwd);
+			rs=pt.executeQuery();
+
+			if(rs.next()) {
+				b=true;
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			dbClose();
+		}
+		return b;
+	} // end Login()
+
+	//	//비밀번호 찾기(아이디+이메일 -> 비밀번호 초기화 동시에 0000 으로 등록)
+	//	public String findPwd1(String user_name, String user_email) {
+	//		String user_pwd=null;
+	//
+	//		try {
+	//			String SQL = "select user_pwd from STUDENT_TEST where user_name=? and user_email=?";
+	//
+	//			pt=con.prepareStatement(SQL);
+	//			pt.setString(1, user_name);
+	//			pt.setString(2, user_email);
+	//			rs=pt.executeQuery();
+	//
+	//			if(rs.next()) {
+	//				user_pwd=rs.getString(1);
+	//			} // end if()
+	//
+	//			try {
+	//				String SQL1 = "update student_test set user_pwd ='0000' where user_name=? and user_email=?";
+	//
+	//				pt=con.prepareStatement(SQL1);
+	//				pt.setString(1, user_name);
+	//				pt.setString(2, user_email);
+	//				rs=pt.executeQuery();
+	//
+	//			}catch(Exception ec) {
+	//				ec.printStackTrace();
+	//			} // // end update try catch
+	//
+	//		}catch(Exception e) {
+	//			e.printStackTrace();
+	//		} // end select try catch
+	//		return user_pwd;
+	//	} //end findPwd()
+	//
+	//	
+	//	public boolean findPwd(String user_name, String user_email) {
+	//		boolean result = true;
+	//		
+	//		try {
+	//			pt = con.prepareStatement("select user_pwd from STUDENT_TEST where user_name=? and user_email=?");
+	//			pt.setString(1, user_name);
+	//			pt.setString(2, user_email);
+	//			rs = pt.executeQuery(); // select문은 executeQuery()메서드로 실행
+	//
+	//		}catch(Exception e) {
+	//			e.printStackTrace();
+	//		} finally {
+	//			dbClose();
+	//		}return result;
+	//	} // end findPwd()
+
+
+	public void userSelectAll(String user_name, String user_email) {
+		int re1;
+		String re2, re3, re4, re5, re6;
+
+		try {
+			pt = con.prepareStatement("select user_no, user_id, user_pwd, user_name, user_phone, user_email from STUDENT where user_name=? and user_email=?");
+			pt.setString(1, user_name);
+			pt.setString(2, user_email);
+			rs = pt.executeQuery(); // select문은 executeQuery()메서드로 실행
+
+			if(rs.next()) {
+				re1 = rs.getInt(1);
+				re2 = rs.getString(2);
+				re3 = rs.getString(3);
+				re4 = rs.getString(4);
+				re5 = rs.getString(5);
+				re6 = rs.getString(6);
+
+				vo.setUser_no(re1); vo.setUser_id(re2);
+				vo.setUser_pwd(re3); vo.setUser_name(re4);
+				vo.setUser_phone(re5); vo.setUser_email(re6);
+
+			} // end if
+
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			dbClose();
+		} // end try catch finally 
+
+	}
+
+	// 아이디 찾기(이름과 연락처(휴대폰번호) 입력 받아서 해당하는 아이디 조회)
+	public boolean findId(String user_name, String user_phone) {
+		boolean result = true;
+		try {
+			String sql = "select user_id from STUDENT where user_name = ? and user_phone = ?";
+			pt = con.prepareStatement(sql);
+			pt.setString(1, user_name);
+			pt.setString(2, user_phone);
+			rs=pt.executeQuery();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			dbClose();
+		}
+		return result;
+	}
+
+
+	public String findId1(String user_name, String user_phone) {
+		String rsrs = null;
+
+		try {
+			String sql = "select user_id from STUDENT where user_name = ? and user_phone = ?";
+			pt = con.prepareStatement(sql);
+			pt.setString(1, user_name);
+			pt.setString(2, user_phone);
+			rs=pt.executeQuery();
+			if(rs.next()) {
+				rsrs = rs.getString(1);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			dbClose();
+		}
+		return rsrs;
+	}
+	// Find 기능  : 아이디+비밀번호 찾기 (아이디 본인 계정 + 비밀번호 0000로 초기화) 
+
+
+	// 비밀번호 찾기 과정
+	// 1. 이름과 이메일 값을 기준으로 이메일이 '존재'하는지 조회(select)
+	// 1-1. 이름과 이메일 값이 일치한다면 이메일을 '출력'할 수 있게 조회(select)
+	// 2. 이름과 이메일 값을 기준으로 비밀번호가 '존재'하는지 조회(select)
+	// 2-1. 랜덤값 10자리 주는 기능(random)
+	// 2-2. 이름과 이메일 값이 일치한다면 비밀번호를 랜덤값으로 변경(update)
+	// 3. 이메일에 변경된 비밀번호 값(랜덤값) 담아서 전송(smtp)
+
+	// 1. 이름과 이메일 값을 기준으로 이메일이 '존재'하는지 조회(select)
+	public boolean findEmail() {
+		boolean result = true;
+
+		try {
+			pt = con.prepareStatement("select user_email from STUDENT where user_name=? and user_email=?");
+			pt.setString(1, vo.getUser_name());
+			pt.setString(2, vo.getUser_email());
+			rs = pt.executeQuery(); // select문은 executeQuery()메서드로 실행
+
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			dbClose();
+		} // end try catch finally      
+
+		return result;
+	} // end findEmail()
+
+	// 1-2. 이름과 이메일 값이 일치한다면 이메일을 '출력'할 수 있게 조회(select)
+	public String findEmail2() {
+		String email = "";
+		try {
+			pt = con.prepareStatement("select user_email from STUDENT where user_name=? and user_email=?");
+			pt.setString(1, vo.getUser_name());
+			pt.setString(2, vo.getUser_email());
+			rs = pt.executeQuery(); // select문은 executeQuery()메서드로 실행
+
+			if(rs.next()) {
+				email = rs.getString(1); 
+			} // end if
+
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			dbClose();
+		} // end try catch finally 
+
+		return email;
+	} // end findEmail2()
+
+	// 2. 이름과 이메일 값을 기준으로 비밀번호가 '존재'하는지 조회(select)
+	public boolean findPwd() {
+		boolean result = true;
+
+		try {
+			pt = con.prepareStatement("select user_pwd from STUDENT where user_name=? and user_email=?");
+			pt.setString(1, vo.getUser_name());
+			pt.setString(2, vo.getUser_email());
+			rs = pt.executeQuery(); // select문은 executeQuery()메서드로 실행
+
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			dbClose();
+		} // end try catch finally      
+
+		return result;
+	} // end findPwd()
+
+	// 2-1. 비밀번호 랜덤값으로 변환(random, size 입력값대로)
+	public String getRandomPwd(int size) {
+		char[] charSet = new char[] {
+				'0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+				'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+				'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+				'!', '@', '#', '$', '%', '^', '&' };
+
+		StringBuffer sb = new StringBuffer();
+		SecureRandom sr = new SecureRandom();
+		sr.setSeed(new Date().getTime());
+
+		int idx = 0;
+		int len = charSet.length;
+		for (int i=0; i<size; i++) {
+			// idx = (int) (len * Math.random());
+			idx = sr.nextInt(len); // 강력한 난수를 발생시키기 위해 SecureRandom을 사용한다.
+			sb.append(charSet[idx]);
+
+		}
+		return sb.toString(); // 값 반환
+	} // end getRandomPwd()
+
+	// 2-2. 이름과 이메일 값이 일치한다면 비밀번호를 랜덤값으로 변경(random, update)
+	public int modifyPwd() { 
+		int re = -1;
+
+		try {
+			pt = con.prepareStatement("update STUDENT set user_pwd=? where user_name=? and user_email=?");
+			pt.setString(1, getRandomPwd(10).trim()); // 2-1 기능을 사용하여 비밀번호 10자리 무작위 수 대입
+			pt.setString(2, vo.getUser_name().trim());
+			pt.setString(3, vo.getUser_email().trim());
+
+			re = pt.executeUpdate(); // 수정 쿼리문 성공후 성공한 레코드 행의 개수를 반환
+
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			dbClose();
+		} // end try catch finally
+		return re;
+	} // end modifyPwd()
+
+	// 2-3. 변경된 비밀번호 '출력'할 수 있게 조회(select)
+	public String researchPwd() {      
+		String changedPwd = "";
+
+		try {
+			pt = con.prepareStatement("select user_pwd from STUDENT_TEST where user_name=? and user_email=?");
+			pt.setString(1, vo.getUser_name().trim());
+			pt.setString(2, vo.getUser_email().trim());
+			rs = pt.executeQuery(); // select문은 executeQuery()메서드로 실행
+
+			if(rs.next()) {
+				changedPwd = rs.getString(1); 
+			} // end if
+
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			dbClose();
+		} // end try catch finally 
+
+		return changedPwd;
+	} // end researchPwd()
+
+	// 3. 이메일에 변경된 비밀번호 값(랜덤값) 담아서 전송(smtp)
+	public String SendEmail(String user_email) throws Exception {
+
+		String FROM = "chicken0309@naver.com";
+		String FROMNAME = "KG아이티뱅크";
+		String TO = user_email;
+		String SMTP_USERNAME = "chicken0309@naver.com";
+		String SMTP_PASSWORD = "F1G1T2QT8P9T";
+
+		String HOST = "smtp.naver.com";
+		int PORT = 587;        
+
+		String changedPwd = "";
+
+		String SUBJECT = "[KG아이티뱅크]임시 비밀번호 안내";
+		String BODY = String.join(
+				System.getProperty("line.separator"),
+				"<p>안녕하세요</p>",
+				"<p><strong>test01</strong>님,</p>",
+				"<p>귀하께서 요청하신 임시 비밀번호 수신을 위해 발송된 메일입니다.</p><br>",
+				"<p>고객님의 임시 비밀번호는 <strong><font color='blue'>" + researchPwd() + "</font></strong>입니다.</p><br>",
+				"<p>로그인 후에는 새로운 비밀번호로 변경하셔야 합니다.</p>",
+				"<p>감사합니다.</p>"
+				);
+
+		Properties props = System.getProperties();
+		props.put("mail.transport.protocol", "smtp");
+		props.put("mail.smtp.port", PORT); 
+		props.put("mail.smtp.starttls.enable", "true");
+		props.put("mail.smtp.auth", "true");
+		Session session = Session.getDefaultInstance(props);
+		MimeMessage msg = new MimeMessage(session);
+		msg.setFrom(new InternetAddress(FROM, FROMNAME));
+		msg.setRecipient(Message.RecipientType.TO, new InternetAddress(TO));
+		msg.setSubject(SUBJECT);
+		msg.setContent(BODY, "text/html;charset=euc-kr");
+
+		Transport transport = session.getTransport();
+		try {
+			System.out.println("Sending...");
+
+			transport.connect(HOST, SMTP_USERNAME, SMTP_PASSWORD);
+			transport.sendMessage(msg, msg.getAllRecipients());
+			System.out.println("Email sent!");
+			return "success";
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return "fail";
+		} finally {
+			transport.close();
+		}
+	} // end SendEmail()
+
+
+} // end StudentDTO class
+
+

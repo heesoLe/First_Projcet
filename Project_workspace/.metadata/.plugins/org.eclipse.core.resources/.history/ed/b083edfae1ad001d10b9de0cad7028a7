@@ -1,0 +1,179 @@
+package com.student.controller.Sugang;
+
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+import com.student.dao.Admin_Subject_DAO;
+
+public class Admin_Subject_GUI extends JDialog implements ActionListener {
+
+	
+	JPanel pw= new JPanel(new GridLayout(6,1));
+	JPanel pc= new JPanel(new GridLayout(6,1));
+	JPanel ps= new JPanel();
+	
+	JLabel label_Subject_No = new JLabel("과목 번호");
+	JLabel label_Subject_Name = new JLabel("과목 이름");
+	JLabel label_Subject_Teacher = new JLabel("선생님");
+	JLabel label_Subject_Room = new JLabel("강의실");
+	JLabel label_Subject_Day = new JLabel("요일");
+	JLabel label_Subject_Time = new JLabel("시간");
+	//JLabel label_Subject_Status = new JLabel("상태(기본값:-)");
+	
+	public JTextField no = new JTextField();
+	public JTextField name = new JTextField();
+	public JTextField teacher = new JTextField();
+	public JTextField room = new JTextField();
+	public JTextField day = new JTextField(); 
+	public JTextField time = new JTextField();
+	//public JTextField status = new JTextField();
+	
+	JButton confirm;
+	JButton reset=new JButton("취소");
+	
+	Admin_Subject me;
+	
+	JPanel noChk=new JPanel(new BorderLayout());
+	JButton noChkBtn=new JButton("Subject_No_Check");
+	
+	Admin_Subject_DAO dao = new Admin_Subject_DAO();
+	
+	public Admin_Subject_GUI(Admin_Subject me, String name2) {
+		super(me, "과목등록/수정 창");
+		this.me=me;
+		
+		if(name2.contentEquals("등록")) {
+			confirm = new JButton("등록");
+		} else { // 회원가입 수정일때 실행
+			confirm = new JButton("수정");
+			
+			int row=me.jt.getSelectedRow(); //선택된 행번호 구함
+			no.setText(me.jt.getValueAt(row, 0).toString()); //아이디 입력박스에 선택행 첫번째 열 아이디값을 문자열로 표시
+			name.setText(me.jt.getValueAt(row, 1).toString());
+			teacher.setText(me.jt.getValueAt(row, 2).toString());
+			room.setText(me.jt.getValueAt(row, 3).toString());
+			day.setText(me.jt.getValueAt(row, 4).toString());
+			time.setText(me.jt.getValueAt(row, 5).toString());
+			//status.setText(me.jt.getValueAt(row, 4).toString());
+			
+			
+			//아이디 입력박스 비활성화
+			no.setEditable(false);
+			
+			//아이디 중복검색 버튼 비활성화
+			noChkBtn.setEnabled(false);
+			
+		} //if else
+		
+		//라벨을 pw 페널레이아웃에 추가
+		
+		pw.add(label_Subject_No);
+		pw.add(label_Subject_Name);
+		pw.add(label_Subject_Teacher);
+		pw.add(label_Subject_Room);
+		pw.add(label_Subject_Day);
+		pw.add(label_Subject_Time);
+		//pw.add(label_Subject_Status);
+		
+		//아이디 입력박스와 아이디 중복 검색 버튼을 패널에 추가
+		noChk.add(no,"Center");
+		noChk.add(noChkBtn,"East");
+		
+		//텍스트 필드 패널에 추가
+		pc.add(noChk);
+		pc.add(name);
+		pc.add(teacher);
+		pc.add(room);
+		pc.add(day);
+		pc.add(time);
+		//pc.add(status);
+		
+		//가입(수정), 취소 버튼 패널에 추가
+		ps.add(confirm);
+		ps.add(reset);
+		
+		add(pw,"West"); //프레임 왼쪽에 배치
+		add(pc,"Center");
+		add(ps,"South");
+		
+		setSize(300,250);
+		setLocationRelativeTo(null);
+		setVisible(true);
+		
+		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE); //스윙 다이얼로그 박스 닫기
+		
+		//각 버튼 이벤트 등록
+		confirm.addActionListener(this);
+		reset.addActionListener(this);
+		noChkBtn.addActionListener(this);
+		
+	} //생성자 오버로딩
+	
+	@Override
+	public void actionPerformed(ActionEvent e) { 
+		String btnLabel = e.getActionCommand(); //버튼위의 캡션 문자열을 구함
+		
+		if(btnLabel.equals("등록")) {
+			if(dao.userListInsert(this) > 0) { //가입 성공시 실행
+				messageBox(this, name.getText()+" 등록 되었습니다.");
+				dispose(); //JDialog 창닫기
+				
+				dao.userSelectAll(me.dt); //모든레코드를 다시 가져와서 디폴트 테이블 모델에 올리기
+				
+				if(me.dt.getRowCount() > 0) { //디폴트 테이블 모델에 레코드 행이 있다면
+					me.jt.setRowSelectionInterval(0, 0); //첫번째 행 선택
+				}
+			} else { //가입 실패시 실행
+				messageBox(this,"과목 등록에 실패했습니다.");
+			}
+		} else if(btnLabel.equals("Subject_No_Check")) { //아이디 중복검색
+			if(no.getText().trim().equals("")) { //trim() 메서드는 양쪽 공백을 제거
+				messageBox(this, "과목 번호를 입력해 주세요!");
+				no.requestFocus(); //아이디 입력박스로 포커스 이동
+			} else {
+				if(dao.getIdByCheck(no.getText().trim())) { //==true 생략됨
+					messageBox(this, no.getText()+"는 사용 가능한 과목번호 입니다.");
+				} else {
+					messageBox(this, no.getText()+"는 중복 과목번호 입니다.");
+					no.setText(""); //아이디 입력박스를 초기화
+					no.requestFocus();
+				}
+			} //if else
+		} else if(btnLabel.contentEquals("취소")) {
+			dispose(); // 다이얼로그 박스만 닫는다.
+			//System.exit(0); //전체 프로그램 종료
+		} else if(btnLabel.equals("수정")) {
+			if(dao.userUpdate(this) > 0) {
+				messageBox(this, "과목정보 수정되었습니다.");
+				dispose();
+				
+				dao.userSelectAll(me.dt);
+				if(me.dt.getRowCount() > 0) {
+					me.jt.setRowSelectionInterval(0, 0);
+				}
+			} else {
+				messageBox(this, "과목정보 수정되지 않았습니다.");
+			}
+		}
+		
+		
+		
+	} //이벤트 발생후 호출
+
+	 /* 메시지 박스를 띄워주는 메서드 작성 */
+	   public static void messageBox(Object obj, String message) {
+	      JOptionPane.showMessageDialog((Component)obj, message);
+	      
+	   }
+
+}

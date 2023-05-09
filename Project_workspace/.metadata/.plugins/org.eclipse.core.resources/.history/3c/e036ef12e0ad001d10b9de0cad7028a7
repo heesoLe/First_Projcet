@@ -1,0 +1,13 @@
+package com.student.vo;
+
+public class SubjectVO {
+	
+	private String subject_name;
+	private String subject_teacher;
+	private String subject_room;
+	private String subject_date;
+	private String subject_time;
+	private String subject_status;
+
+
+}

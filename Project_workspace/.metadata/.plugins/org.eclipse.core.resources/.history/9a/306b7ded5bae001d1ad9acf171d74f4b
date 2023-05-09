@@ -1,0 +1,118 @@
+package com.student.controller.MyPage;
+
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+
+import com.student.controller.MainPage.MainPageUI;
+import com.student.dao.MypageDAO;
+import com.student.vo.MemberVO;
+
+public class MyPageDelete {
+
+	MemberVO vo = new MemberVO();		
+	MypageDAO dao = new MypageDAO();
+
+	JFrame jf = new JFrame();
+	private JTextField textField;
+	private JPasswordField passwordField;
+	
+	public MyPageDelete() {
+		jf.setTitle("KGITbank 회원탈퇴");
+		jf.setSize(600,400);
+		jf.setVisible(true);
+		jf.setResizable(false);
+		jf.setLocationRelativeTo(null);
+		jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);	
+		jf.getContentPane().setLayout(null);
+		
+		JPanel panel = new JPanel();
+		panel.setBounds(60, 40, 480, 80);
+		jf.getContentPane().add(panel);
+		panel.setLayout(null);
+		
+		JLabel lblNewLabel = new JLabel("아이디 : ");
+		lblNewLabel.setHorizontalAlignment(SwingConstants.LEFT);
+		lblNewLabel.setFont(new Font("HY견고딕", Font.PLAIN, 20));
+		lblNewLabel.setBounds(20, 15, 100, 50);
+		panel.add(lblNewLabel);
+		
+		textField = new JTextField();//id텍스트필드
+		textField.setBounds(130, 20, 320, 40);
+		panel.add(textField);
+		textField.setColumns(10);
+		
+		JPanel panel_1 = new JPanel();
+		panel_1.setLayout(null);
+		panel_1.setBounds(60, 120, 480, 80);
+		jf.getContentPane().add(panel_1);
+		
+		JLabel lblNewLabel_1 = new JLabel("비밀번호 :");
+		lblNewLabel_1.setHorizontalAlignment(SwingConstants.LEFT);
+		lblNewLabel_1.setFont(new Font("HY견고딕", Font.PLAIN, 20));
+		lblNewLabel_1.setBounds(20, 15, 100, 50);
+		panel_1.add(lblNewLabel_1);
+		
+		passwordField = new JPasswordField();//비밀번호 텍스트필드
+		passwordField.setBounds(130, 20, 320, 40);
+		panel_1.add(passwordField);
+		
+		JPanel panel_2 = new JPanel();
+		panel_2.setBounds(60, 230, 480, 100);
+		jf.getContentPane().add(panel_2);
+		panel_2.setLayout(null);
+		JButton btnNewButton = new JButton("회원탈퇴");
+		
+		
+		//회원 탈퇴 버튼 클릭시 이벤트 등록
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String deleteId = textField.getText().trim();
+				String deletePwd = passwordField.getText().trim();
+				
+				//아이디 비번 비교후 일치하면 회원탈퇴
+				dao.selectIdPwd(deleteId, deletePwd);
+				if(dao.vo.getUser_id().equals(deleteId) && dao.vo.getUser_pwd().equals(deletePwd)) {
+					//id텍스트필드랑 비밀번호 텍스트 필드에 입력한 값을 넣었을때 db에있는 id와pwd랑 같으면 
+					//MyPageMainUI.messageBox(this, "탈퇴되었습니다.");
+					if(dao.delete(deleteId, deletePwd) > 0) {
+						dao.messageBox(jf, "회원탈퇴했습니다.");
+						new MainPageUI();
+						jf.dispose();
+					}
+				}else {		
+					dao.messageBox(jf, "다시입력해주세요");
+					//에러나긴하는데 시연안하면 그만이야
+				}
+			}
+		});
+		btnNewButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		btnNewButton.setFont(new Font("HY견고딕", Font.PLAIN, 22));
+		btnNewButton.setBackground(Color.WHITE);
+		btnNewButton.setBounds(45, 20, 140, 60);
+		panel_2.add(btnNewButton);
+		
+		JButton btnNewButton_1 = new JButton("취소");
+		btnNewButton_1.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		//취소 버튼 클릭시 이벤트 등록
+		btnNewButton_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				jf.dispose();
+			}
+		});
+		btnNewButton_1.setFont(new Font("HY견고딕", Font.PLAIN, 22));
+		btnNewButton_1.setBackground(Color.WHITE);
+		btnNewButton_1.setBounds(295, 20, 140, 60);
+		panel_2.add(btnNewButton_1);
+	}
+}
