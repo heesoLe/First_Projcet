@@ -1,0 +1,43 @@
+-- student 테이블 생성
+create table student(  
+    user_no number(38) primary key -- 사용자 고유번호(PK), 중복 X
+    , user_id varchar2(500) not null -- 사용자 아이디
+    , user_pwd varchar2(500) not null -- 사용자 비밀번호
+    , user_name varchar2(500) not null -- 사용자 이름
+    , user_phone varchar2(500) not null -- 사용자 연락처(010-1234-1234)
+    , user_email varchar2(500) not null -- 사용자 이메일example@naver.com)
+    , user_status varchar2(500) -- 사용자 상태(수강신청 승인 이용)
+);
+
+-- 조회, 삭제, 저장
+select * from student;
+drop table student;
+commit;
+
+-- 관리자 계정(user_id = 'admin', user_pwd = '1234') / 사용자 계정(user_id = 'student', user_pwd = '1234', user_name = '홍길동')
+-- 테스트 계정 추가
+insert into student values(1, 'admin', '1234', '관리자 김씨', '010-4885-8282', 'admin@naver.com', 'ing');
+insert into student values(2, 'student', '1234', '홍길동', '010-5252-1004', 'leeyoung0919@naver.com', 'ing');
+commit;
+
+-- 테스트 계정 삭제
+delete from student where user_id = 'admin';
+delete from student where user_id = 'student';
+commit;
+
+
+-- subject 테이블 생성
+create table subject (
+    subject_no number(38) primary key -- 강의(과목) 고유번호(PK), 중복 X
+    , subject_name varchar2(300) -- 강의명
+    , subject_teacher varchar2(300) -- 강의 진행 강사님
+    , subject_room varchar2(300) -- 강의실 번호
+    , subject_date varchar2(300) -- 강의 날짜
+    , subject_time varchar2(300) -- 강의 시간
+    , subject_status varchar2(300) -- 강의 상태
+);
+
+-- 조회, 삭제, 저장
+select * from subject;
+drop table subject;
+commit;
